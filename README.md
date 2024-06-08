@@ -1,17 +1,4 @@
 
-# API Development Course 2024
-
-Complete API Course Using MongoDb, Node Js, Express Js | Become API Developer Course For 2024
-
-Mastering API Development: MongoDB, Node.js, Express.js - The Comprehensive 2024 Guide. Unlock the power of API development and become an adept API developer with our comprehensive course tailored for 2024. Delve into the core technologies driving modern web APIs – MongoDB, Node.js, and Express.js – and elevate your skills to meet the demands of contemporary development practices.
-
-
-
-## Project Overview
-
-![alt text](https://www.daulathussain.com/wp-content/uploads/2023/05/nft-api-code.jpg)
-
-## Instruction
 
 Kindly follow the following Instructions to run the project in your system and install the necessary requirements
 
