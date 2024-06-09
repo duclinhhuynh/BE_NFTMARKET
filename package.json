@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongoose": "^5.5.2",
     "morgan": "^1.10.0"
   },
   "name": "api_nftmarket",
@@ -8,7 +10,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start:prod": "NODE_ENV=prodution nodemon server.js"
   },
   "author": "duc linh",
   "license": "ISC"

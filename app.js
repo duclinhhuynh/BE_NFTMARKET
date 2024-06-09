@@ -1,9 +1,12 @@
+const usersRouter = require("./routes/usersRouter");
+const nftsRouter = require("./routes/nftsRouter");
 const morgan = require("morgan");
 const express = require("express"); 
 const app = express();
 app.use(express.json());
-const usersRouter = require("./routes/usersRouter");
-const nftsRouter = require("./routes/nftsRouter");
+if(process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"))
+}
 
 app.use(morgan("dev"))
 // SERVING TEMPLATE DEMO
