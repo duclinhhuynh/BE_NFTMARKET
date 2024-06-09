@@ -1,9 +1,9 @@
 const express = require("express"); 
 const nftsRouter = express.Router();
-const {getAllNfts,getSingle,creatNFT,updateNFTs,deleteNFTs} = require("./../controllers/nftsController");
-
+const controllers = require("./../controllers/nftsController");
+nftsRouter.param("id", controllers.checkId)
 // ROUTER NFTS
-nftsRouter.route("/").get(getAllNfts).post(creatNFT);
-nftsRouter.route("/:id").get(getSingle).patch(updateNFTs).delete(deleteNFTs);
+nftsRouter.route("/").get(controllers.getAllNfts).post(controllers.checkBody,controllers.createNFT);
+nftsRouter.route("/:id").get(controllers.getSingle).patch(controllers.updateNFTs).delete(controllers.deleteNFTs);
 
 module.exports = nftsRouter;
