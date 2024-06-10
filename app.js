@@ -18,10 +18,10 @@ app.use((req, res, next) => {
     next();
 })
 // custom middle ware
-app.use((req, res, next) => {
-    console.log("HEY I am from to middle ware");
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log("HEY I am from to middle ware");
+//     next();
+// });
 
 app.use("/api/v1/nfts", nftsRouter);
 app.use("/api/v1/users", usersRouter);

@@ -7,7 +7,11 @@ const controllers = require("./../controllers/nftsController");
 nftsRouter.route('/top-5-nfts')
 .get(controllers.aliasTopNFTs, controllers.getAllNfts);
 
+// STATS ROUTER
+nftsRouter.route("/nfts-stats").get(controllers.getNFTsStats);
 
+// MONTH ROUTER
+nftsRouter.route("/monthly-plan/:year").get(controllers.getMonthlyPlan);
 
 // ROUTER NFTS
 nftsRouter.route("/").get(controllers.getAllNfts).post(controllers.createNFT);
