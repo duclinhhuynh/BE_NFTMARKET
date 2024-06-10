@@ -1,7 +1,7 @@
 const fs = require("fs");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const NFT = require("./../../models/nftModel");
+const NFT = require("./../../models/nftsModel");
 
 dotenv.config({ path: "./config.env" });
 const DB = process.env.DATABASE.replace(

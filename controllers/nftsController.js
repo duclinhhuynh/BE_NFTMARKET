@@ -4,6 +4,7 @@ const app = express();
 app.use(express.json());
 const nfts = JSON.parse(fs.readFileSync(`${__dirname}/../nft-data/data/nft-simple.json`)); 
 const NFT = require("./../models/nftsModel");
+const APIFeatures = require("./../utils/apiFeatures");
 exports.checkId = (req, res, next, value) => {
     console.log(`ID: ${value}`);
     // if(req.params.id * 1 > nfts.length) {
@@ -15,38 +16,38 @@ exports.checkId = (req, res, next, value) => {
     next()
 }
 
-// exports.checkBody = (req, res, next) => {
-//     console.log('checkbody')
-//     if(!req.body.name || !req.body.price){
-//         return res.status(400).json({
-//             status: "fail",
-//             message:"missing name and price",
-//         });
-//     }
-//     next();
-// }
-
-// getAll nft
-exports.getAllNfts = async(req, res)=> {
+exports.aliasTopNFTs = (req, res, next) => {
+    req.limit = '5',
+    req.query.sort = "-ratingsAverage, price";
+    req.query.fields = "name, price,ratingsAverage,difficulty";
+    next();
+}
+exports.getAllNfts = async(req, res) => {
     try {
-        const nfts = await NFT.find();
-        console.log(req.requestTime);
-        res.status(201).json({
+        const features = new APIFeatures(NFT.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .pagination();
+        const nfts = await features.query;
+
+        // const nfts = await query;
+        res.status(200).json({
             status: "success",
             requestTime: req.requestTime,
             results: nfts.length,
-            data:{
+            data: {
                 nfts,
             }
         });
     } catch (error) {
         res.status(500).json({
             status: 'fail',
-            message: "server error"
-        })
+            message: "Server error"
+        });
     }
+};
 
-}
 
 // Get single NFT
 exports.getSingle = async(req, res) => {
