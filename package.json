@@ -4,7 +4,8 @@
     "express": "^4.19.2",
     "mongoose": "^5.5.2",
     "morgan": "^1.10.0",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "validator": "^13.12.0"
   },
   "name": "api_nftmarket",
   "description": "Complete API Course Using MongoDb, Node Js, Express Js | Become API Developer Course For 2024",

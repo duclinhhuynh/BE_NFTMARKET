@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const slugify = require('slugify');
-
+const slugify = require("slugify");
+const validator = require("validator");
 dotenv.config({ path: "./config.env" });
 
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
@@ -25,6 +25,9 @@ const nftSchema = new mongoose.Schema({
         required: [true, "A NFT must have a name"],
         unique: true, 
         trim: true,
+        maxlenght: [30, "nft must have 30 character"],
+        minlenght: [10, "nft must have 10 character"],
+        validate: [validator.isAlpha, "Nft name must only contain characters"]
     },
     slug: String,
     duration: {
@@ -37,11 +40,14 @@ const nftSchema = new mongoose.Schema({
     },
     difficulty: {
         type: String,
-        required: [true, "must have difficulty"]
+        required: [true, "must have difficulty"],
+        enum: ["easy" ,"medium", "difficulty"]
     },
     ratingsAverage: {
         type: Number,
-        default: 4.5
+        default: 4.5,
+        min: [1, "must have 1"],
+        max: [5, "must have 5"],
     },
     ratingsQuantity: {
         type: Number,
@@ -51,7 +57,15 @@ const nftSchema = new mongoose.Schema({
         type: Number,
         required: [true, "A NFT must have a price"]
     },
-    priceDiscount: Number,
+    priceDiscount: {
+        type: Number,
+        validate: {
+            validator: function(val){
+                return val < this.price 
+            },
+            message: "discount must < regular price "
+        }
+    },
     summary: {
         type: String,
         trim: true,
@@ -71,6 +85,10 @@ const nftSchema = new mongoose.Schema({
         default: Date.now()
     },
     startDates: [Date],
+    secretNFTs: {
+        type: Boolean,
+        default: false
+    }
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
@@ -95,6 +113,30 @@ nftSchema.pre("save", function(next) {
 
 nftSchema.post("save", function(doc, next) {
     console.log(doc);
+    next();
+});
+
+// query middle ware
+nftSchema.pre(/^find^/, function(next){
+    this.find({secretNFTs: {$ne: true}});
+    this.start = Date.now()
+    next()
+})
+
+nftSchema.pre("findOne", function(next){
+    this.find({secretNFTs: {$ne: true}});
+    next()
+})
+
+nftSchema.pre(/^find^/, function(doc, next){
+    console.log(`query took time: ${Date.now() - this.start} times`);
+    console.log(doc);
+
+    next()
+})
+// AGGreation middleware
+nftSchema.pre("aggregate", function(next) {
+    console.log(this.pipleline()/unshift({$match: {secretNFTs: {$ne: true}}}));
     next();
 });
 
