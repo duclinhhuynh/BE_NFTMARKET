@@ -5,7 +5,8 @@ app.use(express.json());
 const nfts = JSON.parse(fs.readFileSync(`${__dirname}/../nft-data/data/nft-simple.json`)); 
 const NFT = require("./../models/nftsModel");
 const APIFeatures = require("./../utils/apiFeatures");
-const { match } = require("assert");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 exports.checkId = (req, res, next, value) => {
     console.log(`ID: ${value}`);
     // if(req.params.id * 1 > nfts.length) {
@@ -24,8 +25,7 @@ exports.aliasTopNFTs = (req, res, next) => {
     next();
 }
 
-exports.getAllNfts = async(req, res) => {
-    try {
+exports.getAllNfts = catchAsync (async(req, res) => {
         const features = new APIFeatures(NFT.find(), req.query)
         .filter()
         .sort()
@@ -42,92 +42,87 @@ exports.getAllNfts = async(req, res) => {
                 nfts,
             }
         });
-    } catch (error) {
-        res.status(500).json({
-            status: 'fail',
-            message: "Server error"
-        });
-    }
-};
+    });
 
 // Get single NFT
-exports.getSingle = async(req, res) => {
-    try {
+exports.getSingle = catchAsync ( async(req, res, next) => {
     const nft = await NFT.findById(req.params.id);
+    if(!nft) {
+        return next(new AppError('No nft found with that ID', 404));
+    }
+
     res.status(200).json({
         status: "success",
         data: {
             nft,
         }
     });
-   } catch (error) {
-    res.status(404).json({
-        status: "fail",
-        message: "error"
-    });
-   }
-  
-};
+   } 
+);
 
 // create nft 
-exports.createNFT = async (req, res) => {
-    try {
-        const newNFT = await NFT.create(req.body);
-        res.status(200).json({
-            status: "success",
-            data: {
-                nft: newNFT,
-            },
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error,
-        });
+exports.createNFT = catchAsync( async(req, res, next) => {
+    const newNFT = await NFT.create(req.body);
+    if(!nft) {
+        return next(new AppError('No nft found with that ID', 404));
     }
-};
+     res.status(200).json({
+        status: "success",
+        data: {
+            nft: newNFT,
+        },
+    });
+    // try {
+    //     const newNFT = await NFT.create(req.body);
+    //     res.status(200).json({
+    //         status: "success",
+    //         data: {
+    //             nft: newNFT,
+    //         },
+    //     });
+    // } catch (error) {
+    //     res.status(400).json({
+    //         status: "fail",
+    //         message: error,
+    //     });
+    // }
+});
+
 
 // path nft
-exports.updateNFTs = async (req, res) => {
-    try {
+exports.updateNFTs = catchAsync ( async (req, res, next) => {
         const nft = await NFT.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         })
+        if(!nft) {
+            return next(new AppError('No nft found with that ID', 404));
+        }
         res.status(200).json({
             status: "success",
             data: {
                 nft,
             }
         })
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error,
-        });
-    }
-}
+    } 
+);
 
 // Delete NFT
-exports.deleteNFTs = async (req, res) => {
-    try {
-        await NFT.findByIdAndDelete(req.params.id)
+exports.deleteNFTs = catchAsync (async (req, res, next) => {
+        const nft = await NFT.findByIdAndDelete(req.params.id)
+        if(!nft) {
+            return next(new AppError('No nft found with that ID', 404));
+        }
         res.status(204).json({
             status: "success",
             data: null,
         });
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error,
-        });
-    }
-}
+    } 
+);
 
 // Aggregation Pipeline
 
-exports.getNFTsStats = async (req, res) => {
-    try {
+exports.getNFTsStats = catchAsync (async (req, res, next) => {
             const stats = await NFT.aggregate([
             {
                 $match: { ratingsAverage: { $gte: 4.5 } },
@@ -160,16 +155,10 @@ exports.getNFTsStats = async (req, res) => {
                 stats,
             },
         });
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error,
-        });
     }
-}
+);
 
-exports.getMonthlyPlan = async (req, res) => {
-    try {
+exports.getMonthlyPlan = catchAsync (async (req, res, next) => {
         const year = req.params.year * 1;
         const plan = await NFT.aggregate([
             {
@@ -221,11 +210,6 @@ exports.getMonthlyPlan = async (req, res) => {
                 plan,
             },
         });
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error,
-        });
     }
-} 
+);
 

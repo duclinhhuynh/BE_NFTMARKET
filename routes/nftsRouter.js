@@ -1,6 +1,7 @@
 const express = require("express"); 
 const nftsRouter = express.Router();
 const controllers = require("./../controllers/nftsController");
+const catchAsync = require("../utils/catchAsync");
 // nftsRouter.param("id", controllers.checkId)
 
 // TOP ROUTER NFTS
