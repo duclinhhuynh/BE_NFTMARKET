@@ -1,24 +1,6 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const slugify = require("slugify");
 const validator = require("validator");
-dotenv.config({ path: "./config.env" });
-
-const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
-
-mongoose.connect(DB, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,  // Added for better compatibility with the latest MongoDB driver
-})
-.then(() => {
-    console.log("DB Connection Successfully"); 
-})
-.catch((err) => {
-    console.log("Error", err);
-});
-
 const nftSchema = new mongoose.Schema({
     name: {
         type: String,

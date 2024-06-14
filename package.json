@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^5.5.2",
@@ -12,7 +13,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon server.js",
+    "start": "SET NODE_ENV=development & nodemon server.js",
     "start:prod": "NODE_ENV=prodution nodemon server.js",
     "debug": "ndb server.js"
   },

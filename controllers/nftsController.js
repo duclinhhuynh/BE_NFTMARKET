@@ -2,10 +2,10 @@ const fs = require("fs")
 const express = require("express"); 
 const app = express();
 app.use(express.json());
-const nfts = JSON.parse(fs.readFileSync(`${__dirname}/../nft-data/data/nft-simple.json`)); 
+// const nfts = JSON.parse(fs.readFileSync(`${__dirname}/../nft-data/data/nft-simple.json`)); 
 const NFT = require("./../models/nftsModel");
-const APIFeatures = require("./../utils/apiFeatures");
 const catchAsync = require("../utils/catchAsync");
+const APIFeatures = require("./../utils/apiFeatures");
 const AppError = require("../utils/appError");
 exports.checkId = (req, res, next, value) => {
     console.log(`ID: ${value}`);
