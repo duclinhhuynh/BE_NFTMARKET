@@ -1,4 +1,4 @@
-const AppError = require("../utils/appError");
+const AppError = require("../Utils/appError");
 
 const handleDuplicateFieldsBD = (err) => {
     const value = err.errmsg.match(/(?<=")(?:\\.|[^\\])*(?=")/)

@@ -4,6 +4,8 @@ const {getAllUsers,getSingleUsers,createUsers,updateUsers,deleteUsers} = require
 const authControllers = require("./../controllers/authController");
 
 usersRouter.post("/signup", authControllers.signup);
+usersRouter.post("/login", authControllers.login);
+
 
 // Routers users
 usersRouter.route("/").get(getAllUsers).post(createUsers);
