@@ -1,39 +1,50 @@
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const app = require("./app");
-dotenv.config({path: "./config.env"})
 
-process.on("unhandledRejection", err => {
-    console.log(err.name, err.message);
-    server.close(() => {
-        process.exit(1);
-    })
-})
-const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
+// Load environment variables from config.env
+dotenv.config({ path: "./config.env" });
 
-mongoose.connect(DB, {
+// Handling uncaught exceptions
+process.on("uncaughtException", (err) => {
+  console.log("UNCAUGHT EXCEPTION! Shutting down...");
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
+// Database connection string with password replacement
+const DB = process.env.DATABASE.replace(
+  "<PASSWORD>",
+  process.env.DATABASE_PASSWORD
+);
+
+// Connect to the database
+mongoose
+  .connect(DB, {
     useCreateIndex: true,
     useFindAndModify: false,
     useNewUrlParser: true,
-    useUnifiedTopology: true,  // Added for better compatibility with the latest MongoDB driver
-})
-.then(() => {
-    console.log("DB Connection Successfully"); 
-})
-.catch((err) => {
-    console.log("Error", err);
+    useUnifiedTopology: true, // Added for better compatibility with the latest MongoDB driver
+  })
+  .then(() => {
+    console.log("DB Connection Successful");
+  })
+  .catch((err) => {
+    console.log("DB Connection Error:", err);
+    process.exit(1); // Exit the process if the DB connection fails
+  });
+
+// Start the server
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`app runnig  on port ${port}....`);
-})
-
-process.on("uncaughtException", err => {
-    console.log("unhandleRecjection shutting down");
-    console.log(err);
-    server.close(() => {
-        process.exit(1);
-    })
-})
-
+// Handling unhandled promise rejections
+process.on("unhandledRejection", (err) => {
+  console.log("UNHANDLED REJECTION! Shutting down...");
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});

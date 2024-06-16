@@ -18,6 +18,7 @@ app.use(express.static(`${__dirname}/nft-data/img`));
 app.use((req, res, next) => {
     // convert to string
     req.requestTime = new Date().toISOString();
+    console.log(req.headers);
     next();
 })
 app.use("/api/v1/nfts", nftsRouter);
